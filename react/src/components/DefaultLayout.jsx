@@ -7,8 +7,14 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  BellIcon,
+  UserIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { NavLink, Outlet } from "react-router-dom";
+import { userStateContext } from "../contexts/ContextProvider";
 
 const user = {
   name: "Tom Cook",
@@ -27,6 +33,7 @@ function classNames(...classes) {
 }
 
 export default function DefaultLayout() {
+  const { currentUser } = userStateContext();
   const logout = (ev) => {
     ev.preventDefault();
     console.log("logout");
@@ -74,11 +81,7 @@ export default function DefaultLayout() {
                       <MenuButton className="relative flex items-center max-w-xs text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          alt=""
-                          src={user.imageUrl}
-                          className="rounded-full size-8"
-                        />
+                        <UserIcon className="w-8 h-8 p-2 text-white rounded-full bg-black/25" />
                       </MenuButton>
                     </div>
                     <MenuItems
@@ -139,18 +142,14 @@ export default function DefaultLayout() {
             <div className="pt-4 pb-3 border-t border-gray-700">
               <div className="flex items-center px-5">
                 <div className="shrink-0">
-                  <img
-                    alt=""
-                    src={user.imageUrl}
-                    className="rounded-full size-10"
-                  />
+                  <UserIcon className="w-8 h-8 p-2 text-white rounded-full bg-black/25" />
                 </div>
                 <div className="ml-3">
                   <div className="font-medium text-white text-base/5">
-                    {user.name}
+                    {currentUser.name}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
-                    {user.email}
+                    {currentUser.email}
                   </div>
                 </div>
               </div>
