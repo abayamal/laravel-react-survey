@@ -13,8 +13,8 @@ import {
   UserIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { NavLink, Outlet } from "react-router-dom";
-import { userStateContext } from "../contexts/ContextProvider";
+import { NavLink, Outlet, Navigate } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
 
 const user = {
   name: "Tom Cook",
@@ -33,7 +33,12 @@ function classNames(...classes) {
 }
 
 export default function DefaultLayout() {
-  const { currentUser } = userStateContext();
+  const { currentUser, userToken } = useStateContext();
+
+  if (!userToken) {
+    return <Navigate to="login" />;
+  }
+
   const logout = (ev) => {
     ev.preventDefault();
     console.log("logout");
