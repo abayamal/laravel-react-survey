@@ -8,7 +8,6 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 export default function Surveys() {
   const { surveys } = useStateContext();
 
-  console.log(surveys);
 
   const onDeleteClick = () => {
     console.log("On delete click");
