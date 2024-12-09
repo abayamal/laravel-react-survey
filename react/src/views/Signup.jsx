@@ -1,17 +1,37 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axiosClient from "../axios.js";
 
 export default function Signup() {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [error, setError] = useState({ __html: "" });
 
-  const [fullName,setFullName] = useState('');
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
-  const [passwordConfirmation,setPasswordConfirmation] = useState('');
-  const [error,setError] = useState({__html:''});
-
-  const onSubmit = (ev)=>{
+  const onSubmit = (ev) => {
     ev.preventDefault();
-    
-  }
+    setError({ __html: "" });
+
+    axiosClient
+      .post("/signup", {
+        name: fullName,
+        email,
+        password,
+        password_confirmation: passwordConfirmation,
+      })
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        if (error.response) {
+          const finalErrors = Object.values(error.response.data.errors).reduse(
+            (accum, next) => [...next, ...accum],
+            []
+          );
+        }
+      });
+  };
   return (
     <>
       <h2 className="mt-10 font-bold tracking-tight text-center text-gray-900 text-2xl/9">
@@ -19,8 +39,13 @@ export default function Signup() {
       </h2>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6" onSubmit={onSubmit}>
-        <div>
+        <form
+          action="#"
+          method="POST"
+          className="space-y-6"
+          onSubmit={onSubmit}
+        >
+          <div>
             <label
               htmlFor="full-name"
               className="block font-medium text-gray-900 text-sm/6"
@@ -65,7 +90,6 @@ export default function Signup() {
               >
                 Password
               </label>
-
             </div>
             <div className="mt-2">
               <input
@@ -87,7 +111,6 @@ export default function Signup() {
               >
                 Password Confirmation
               </label>
-            
             </div>
             <div className="mt-2">
               <input
