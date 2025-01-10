@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useStateContext } from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 
 export default function Signup() {
+  const { setCurrentUser, setUserToken } = useStateContext();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState({ __html: "" });
-
   const onSubmit = (ev) => {
     ev.preventDefault();
     setError({ __html: "" });
@@ -21,15 +22,19 @@ export default function Signup() {
         password_confirmation: passwordConfirmation,
       })
       .then(({ data }) => {
-        console.log(data);
+        setCurrentUser(data.user);
+          setUserToken(data.token);
       })
       .catch((error) => {
         if (error.response) {
-          const finalErrors = Object.values(error.response.data.errors).reduse(
+          const finalErrors = Object.values(error.response.data.errors).reduce(
             (accum, next) => [...next, ...accum],
             []
           );
+          console.log(finalErrors);
+          setError({ __html: finalErrors.join("<br>") });
         }
+        console.error(error);
       });
   };
   return (
@@ -39,6 +44,12 @@ export default function Signup() {
       </h2>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        {error.__html && (
+          <div
+            className="px-3 py-2 text-white bg-red-500 rounded"
+            dangerouslySetInnerHTML={error}
+          ></div>
+        )}
         <form
           action="#"
           method="POST"
@@ -58,6 +69,8 @@ export default function Signup() {
                 name="name"
                 type="text"
                 required
+                value={fullName}
+                onChange={(ev) => setFullName(ev.target.value)}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 placeholder="Full Name"
               />
@@ -76,6 +89,8 @@ export default function Signup() {
                 name="email"
                 type="email"
                 required
+                value={email}
+                onChange={(ev) => setEmail(ev.target.value)}
                 autoComplete="email"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
@@ -97,6 +112,8 @@ export default function Signup() {
                 name="password"
                 type="password"
                 required
+                value={password}
+                onChange={(ev) => setPassword(ev.target.value)}
                 autoComplete="current-password"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
@@ -112,12 +129,15 @@ export default function Signup() {
                 Password Confirmation
               </label>
             </div>
+
             <div className="mt-2">
               <input
                 id="password-confirmation"
                 name="password_confirmation"
                 type="password"
                 required
+                value={passwordConfirmation}
+                onChange={(ev) => setPasswordConfirmation(ev.target.value)}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 placeholder="Password Confirmation"
               />
