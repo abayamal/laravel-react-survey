@@ -2,6 +2,7 @@ import { useState } from "react";
 import PageComponent from "../components/PageComponent";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import TButton from "../components/core/TButton";
+import axiosClient from "../axios";
 
 export default function SurveyView() {
   const [survey, setSurvey] = useState({
@@ -21,7 +22,14 @@ export default function SurveyView() {
 
   const onSubmit = (ev) => {
     ev.preventDefault();
-    console.log(ev);
+
+    axiosClient.post("/survey", {
+      title: "lorem ipsum",
+      description: "test",
+      expire_date: "2025-11-24",
+      status: true,
+      questions: [],
+    });
   };
   return (
     <PageComponent title="Create new survey">
