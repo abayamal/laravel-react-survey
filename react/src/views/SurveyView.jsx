@@ -16,20 +16,23 @@ export default function SurveyView() {
     question: [],
   });
 
-  const onImageChoose = () => {
-    console.log("On image choose");
+  const onImageChoose = (ev) => {
+    const file = ev.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSurvey({
+        ...survey,
+        image: file,
+        image_url: reader.result,
+      });
+
+      ev.target.value = "";
+    };
+    reader.readAsDataURL(file);
   };
 
   const onSubmit = (ev) => {
     ev.preventDefault();
-
-    axiosClient.post("/survey", {
-      title: "lorem ipsum",
-      description: "test",
-      expire_date: "2025-11-24",
-      status: true,
-      questions: [],
-    });
   };
   return (
     <PageComponent title="Create new survey">
